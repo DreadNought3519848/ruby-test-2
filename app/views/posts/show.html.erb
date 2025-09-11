@@ -1,57 +1,11 @@
-<h1>投稿の詳細</h1>
-
+<h1>投稿詳細</h1>
 <p>
-  <strong><%= @post.name %></strong>
-  <span>(<%= l(@post.created_at, format: :short) %>)</span>
+  <strong>名前：</strong><%= @post.name %>
 </p>
-
-<div><%= simple_format(h(@post.content)) %></div>
-
-<hr>
-
-<h2>返信</h2>
-
-<% if notice %><p style="color: green;"><%= notice %></p><% end %>
-<% if alert  %><p style="color: red;"><%= alert  %></p><% end %>
-
-<ul>
-  <% @post.comments.order(created_at: :asc).each do |c| %>
-    <li>
-      <strong><%= c.name %></strong>
-      <span>(<%= l(c.created_at, format: :short) %>)</span><br>
-      <%= simple_format(h(c.content)) %>
-    </li>
-  <% end %>
-</ul>
-
-<hr>
-
-<!-- 返信フォーム（POST /posts/:post_id/comments） -->
-<%= form_with model: [@post, @comment], local: true do |f| %>
-  <% if @comment && @comment.errors.any? %>
-    <div style="color: red;">
-      <p><%= @comment.errors.count %> 件のエラーがあります:</p>
-      <ul>
-        <% @comment.errors.full_messages.each do |m| %>
-          <li><%= m %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div>
-    <%= f.label :name, "名前" %><br>
-    <%= f.text_field :name %>
-  </div>
-
-  <div>
-    <%= f.label :content, "返信" %><br>
-    <%= f.text_area :content, rows: 3 %>
-  </div>
-
-  <div>
-    <%= f.submit "返信する" %>
-  </div>
-<% end %>
-
-<p><%= link_to "タイムラインに戻る", root_path %></p>
+<p>
+  <strong>内容：</strong><%= @post.content %>
+</p>
+<p>
+  <strong>作成日時：</strong><%= l(@post.created_at, format: :long) %>
+</p>
+<%= link_to "一覧に戻る", root_path %>

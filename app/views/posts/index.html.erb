@@ -1,2 +1,59 @@
-<h1>Posts#index</h1>
-<p>Find me in app/views/posts/index.html.erb</p>
+<h1>タイムライン（試作）</h1>
+
+<!-- フラッシュ表示 -->
+<% if notice %><p style="color: green;"><%= notice %></p><% end %>
+<% if alert  %><p style="color: red;"><%= alert  %></p><% end %>
+
+<!-- 新規投稿フォーム（ここから POST /posts） -->
+<%= form_with model: @post, local: true do |f| %>
+  <% if @post.errors.any? %>
+    <div style="color: red;">
+      <p><%= @post.errors.count %> 件のエラーがあります:</p>
+      <ul>
+        <% @post.errors.full_messages.each do |m| %>
+          <li><%= m %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "名前（30文字以内）" %><br>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :content, "本文（280文字以内）" %><br>
+    <%= f.text_area :content, rows: 3 %>
+  </div>
+
+  <div>
+    <%= f.submit "投稿" %>
+  </div>
+<% end %>
+
+<hr>
+
+<!-- 投稿一覧（タイムライン） -->
+<ul>
+  <% @posts.each do |post| %>
+    <li>
+      <!-- 投稿ヘッダ：名前 / 時刻 -->
+      <strong><%= post.name %></strong>
+      <span>(<%= l(post.created_at, format: :short) %>)</span><br>
+
+      <!-- 本文は改行を保持して表示、XSS対策として h() を使う -->
+      <div><%= simple_format(h(post.content)) %></div>
+
+      <!-- 詳細ページへのリンク -->
+      <%= link_to "詳細＆返信", post_path(post) %>
+
+      <!-- 削除ボタン（ログイン無しで誰でも削除可能：学習用） -->
+      <%= button_to "削除", post_path(post), method: :delete, data: { confirm: "削除しますか？" } %>
+
+      <!-- コメント件数表示（optional） -->
+      <span>返信: <%= post.comments.count %></span>
+    </li>
+    <hr>
+  <% end %>
+</ul>

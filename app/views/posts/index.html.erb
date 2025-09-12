@@ -3,12 +3,28 @@
 
 <ul>
   <% @posts.each do |post| %>
-    <li>
+    <li style="margin-bottom: 20px;">
       <strong><%= post.name %></strong>:
       <%= post.content %>
       <em>(<%= l(post.created_at, format: :short) %>)</em>
       <%= link_to "詳細", post_path(post) %> |
       <%= link_to "削除", post_path(post), method: :delete, data: { confirm: "本当に削除しますか？" } %>
+
+      <%# --- コメント一覧だけ表示 --- %>
+      <% if post.comments.any? %>
+        <ul style="margin-top: 5px; margin-left: 20px; color: gray;">
+          <% post.comments.each do |comment| %>
+            <li>
+              <strong><%= comment.name %></strong>:
+              <%= comment.content %>
+              <em>(<%= l(comment.created_at, format: :short) %>)</em>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p style="margin-left: 20px; color: #666;">コメントはまだありません</p>
+      <% end %>
     </li>
   <% end %>
 </ul>
+

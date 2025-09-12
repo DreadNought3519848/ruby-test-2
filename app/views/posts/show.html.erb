@@ -1,11 +1,45 @@
 <h1>投稿詳細</h1>
+
 <p>
-  <strong>名前：</strong><%= @post.name %>
+  <strong><%= @post.name %></strong>:  
+  <%= @post.content %>  
+  <em>(<%= l(@post.created_at, format: :short) %>)</em>
 </p>
-<p>
-  <strong>内容：</strong><%= @post.content %>
-</p>
-<p>
-  <strong>作成日時：</strong><%= l(@post.created_at, format: :long) %>
-</p>
-<%= link_to "一覧に戻る", root_path %>
+
+<hr>
+
+<h2>コメント一覧</h2>
+<% if @post.comments.any? %>
+  <ul>
+    <% @post.comments.each do |comment| %>
+      <li>
+        <strong><%= comment.name %></strong>:  
+        <%= comment.content %>  
+        <em>(<%= l(comment.created_at, format: :short) %>)</em>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>コメントはまだありません。</p>
+<% end %>
+
+<hr>
+
+<h2>コメントを書く</h2>
+<%= form_with(model: [@post, @post.comments.build], local: true) do |form| %>
+  <div>
+    <%= form.label :name, "名前" %><br>
+    <%= form.text_field :name %>
+  </div>
+  <div>
+    <%= form.label :content, "コメント" %><br>
+    <%= form.text_area :content %>
+  </div>
+  <div>
+    <%= form.submit "送信" %>
+  </div>
+<% end %>
+
+<hr>
+<%= link_to "タイムラインに戻る", posts_path %>
+
